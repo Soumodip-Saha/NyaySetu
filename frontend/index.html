@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NyaySetu | AI Legal Service Routing & Explainable Professional Matching</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚖️</text></svg>">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            },
+            saffron: '#ff9933',
+            indiaGreen: '#138808',
+            gold: '#d97706'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body class="min-h-screen bg-slate-50 flex flex-col text-slate-800">
+
+  <!-- Tricolor Accent Top Bar -->
+  <div class="tricolor-stripe w-full"></div>
+
+  <!-- Header -->
+  <header class="glass-header sticky top-0 z-40 shadow-sm border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('citizen')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-900 to-blue-600 flex items-center justify-center text-white shadow-md">
+          <i data-lucide="scale" class="w-5 h-5 text-amber-300"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="text-xl font-black brand-font tracking-tight text-brand-900">NyaySetu</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-semibold border border-blue-200">Hackspire '26</span>
+          </div>
+          <p class="text-[10px] text-slate-500 font-medium tracking-wide">Intelligent Legal Service Routing & Explainable Match</p>
+        </div>
+      </div>
+
+      <!-- Main Navigation Tabs -->
+      <nav class="hidden md:flex items-center space-x-1 bg-slate-100/80 p-1 rounded-xl border border-slate-200">
+        <button onclick="switchTab('citizen')" id="tab-citizen" class="nav-tab-btn px-4 py-1.5 rounded-lg text-xs font-semibold transition-all bg-white text-brand-900 shadow-sm">
+          <i data-lucide="compass" class="w-3.5 h-3.5 inline mr-1.5"></i> Citizen Intake & Match
+        </button>
+        <button onclick="switchTab('scanner')" id="tab-scanner" class="nav-tab-btn px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all">
+          <i data-lucide="file-search" class="w-3.5 h-3.5 inline mr-1.5"></i> Notice Scanner
+        </button>
+        <button onclick="switchTab('provider')" id="tab-provider" class="nav-tab-btn px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all">
+          <i data-lucide="award" class="w-3.5 h-3.5 inline mr-1.5"></i> LSP & NyayCredits
+        </button>
+        <button onclick="switchTab('govt')" id="tab-govt" class="nav-tab-btn px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all">
+          <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 inline mr-1.5"></i> DISHA 2.0 Hub
+        </button>
+      </nav>
+
+      <!-- Right Controls: Language & Live Status -->
+      <div class="flex items-center space-x-3">
+        <div class="relative">
+          <select id="ui-language-select" onchange="changeLanguage(this.value)" class="text-xs bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-sm cursor-pointer">
+            <option value="English">🌐 English</option>
+            <option value="Hindi">🇮🇳 हिन्दी (Hindi)</option>
+            <option value="Bengali">🇮🇳 বাংলা (Bengali)</option>
+            <option value="Tamil">🇮🇳 தமிழ் (Tamil)</option>
+            <option value="Marathi">🇮🇳 मराठी (Marathi)</option>
+          </select>
+        </div>
+
+        <button onclick="openVerificationModal()" class="hidden sm:flex items-center space-x-1.5 text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-3 py-1.5 rounded-lg font-semibold transition-all">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-amber-600"></i>
+          <span>Verify Bar ID</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Judge / Hackathon 1-Click Interactive Showcase Bar -->
+  <div class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white py-2.5 px-4 shadow-inner">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 text-xs">
+      <div class="flex items-center space-x-2">
+        <span class="bg-amber-400 text-slate-950 font-bold px-2 py-0.5 rounded uppercase tracking-wider text-[10px]">Judges Quick Test</span>
+        <span class="text-slate-300">Click a realistic scenario to see instant AI Diagnostic & Explainable Matching:</span>
+      </div>
+      <div class="flex flex-wrap items-center gap-1.5">
+        <button onclick="loadPreset(0)" class="preset-pill bg-white/10 hover:bg-white/25 px-2.5 py-1 rounded-md text-[11px] transition-all border border-white/15 flex items-center space-x-1">
+          <span>🏞️ Land Encroachment (Bengali)</span>
+        </button>
+        <button onclick="loadPreset(1)" class="preset-pill bg-white/10 hover:bg-white/25 px-2.5 py-1 rounded-md text-[11px] transition-all border border-white/15 flex items-center space-x-1">
+          <span>💼 Unpaid Wages (English)</span>
+        </button>
+        <button onclick="loadPreset(2)" class="preset-pill bg-white/10 hover:bg-white/25 px-2.5 py-1 rounded-md text-[11px] transition-all border border-white/15 flex items-center space-x-1">
+          <span>👨‍👩‍👧 Mutual Custody (Hindi)</span>
+        </button>
+        <button onclick="loadPreset(3)" class="preset-pill bg-white/10 hover:bg-white/25 px-2.5 py-1 rounded-md text-[11px] transition-all border border-white/15 flex items-center space-x-1">
+          <span>🛡️ Cyber Scam (Tamil)</span>
+        </button>
+        <button onclick="loadPreset(4)" class="preset-pill bg-white/10 hover:bg-white/25 px-2.5 py-1 rounded-md text-[11px] transition-all border border-white/15 flex items-center space-x-1">
+          <span>💳 Sec 138 Cheque Bounce</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Application Body -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+    <!-- ==================== TAB 1: CITIZEN INTAKE & EXPLAINABLE MATCH ==================== -->
+    <section id="view-citizen" class="space-y-6">
+
+      <!-- Hero & Voice Intake Form -->
+      <div class="glass-card rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-72 h-72 bg-blue-100/50 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-amber-100/40 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-3xl">
+          <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-800 text-xs font-semibold mb-3">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-blue-600"></i>
+            <span>Multilingual & Voice-First Legal Need Detection</span>
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            Tell us your legal problem in <span class="gradient-text-primary">any Indian language</span>.
+          </h1>
+          <p class="text-sm text-slate-600 mt-1.5">
+            NyaySetu AI analyzes your issue, diagnoses applicable Indian Acts, and connects you with the exact right verified advocate, mediator, or free legal aid.
+          </p>
+        </div>
+
+        <!-- Intake Box -->
+        <div class="mt-6 space-y-4">
+          <div class="relative">
+            <textarea
+              id="citizen-query-input"
+              rows="3"
+              placeholder="Speak or type your problem in simple words (e.g. 'Mera padosi bina permission meri boundary zameen par diwar bana raha hai' or 'Company fired me without notice and withheld 3 months salary')..."
+              class="w-full bg-white border border-slate-300 rounded-xl p-4 pr-14 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 shadow-sm transition-all resize-none"
+            ></textarea>
+
+            <!-- Voice Record Button (Web Speech API) -->
+            <button
+              id="voice-mic-btn"
+              onclick="toggleVoiceRecording()"
+              title="Click to speak (Voice Recognition)"
+              class="absolute right-3 top-3 w-10 h-10 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all shadow-sm"
+            >
+              <i id="mic-icon" data-lucide="mic" class="w-5 h-5 text-brand-700"></i>
+            </button>
+          </div>
+
+          <!-- Quick Filters: Location, Budget, Consultation Mode -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">
+                <i data-lucide="map-pin" class="w-3 h-3 inline text-slate-400"></i> Your City / Jurisdiction
+              </label>
+              <select id="user-location-input" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-medium text-slate-700 focus:ring-2 focus:ring-brand-500">
+                <option value="Kolkata, West Bengal">Kolkata, West Bengal</option>
+                <option value="New Delhi, Delhi">New Delhi, Delhi NCR</option>
+                <option value="Mumbai, Maharashtra">Mumbai, Maharashtra</option>
+                <option value="Chennai, Tamil Nadu">Chennai, Tamil Nadu</option>
+                <option value="Bengaluru, Karnataka">Bengaluru, Karnataka</option>
+                <option value="Lucknow, Uttar Pradesh">Lucknow, Uttar Pradesh</option>
+                <option value="Varanasi, Uttar Pradesh">Varanasi, Uttar Pradesh</option>
+                <option value="Howrah, West Bengal">Howrah, West Bengal</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">
+                <i data-lucide="indian-rupee" class="w-3 h-3 inline text-slate-400"></i> Maximum Consultation Budget
+              </label>
+              <select id="user-budget-input" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-medium text-slate-700 focus:ring-2 focus:ring-brand-500">
+                <option value="0">₹0 (Free Legal Aid / DLSA / Lok Adalat)</option>
+                <option value="500" selected>Under ₹500 (Affordable)</option>
+                <option value="1000">Under ₹1,000 (Standard)</option>
+                <option value="2500">Under ₹2,500 (Senior Specialist)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">
+                <i data-lucide="video" class="w-3 h-3 inline text-slate-400"></i> Consultation Mode
+              </label>
+              <select id="user-mode-input" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-medium text-slate-700 focus:ring-2 focus:ring-brand-500">
+                <option value="tele-law">Instant Tele-Law (Video / Audio)</option>
+                <option value="in-person">In-Person Court Chamber</option>
+                <option value="any">Any Available Mode</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="flex items-center justify-between pt-2">
+            <div id="voice-status-indicator" class="text-xs font-medium text-slate-500 flex items-center space-x-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span>AI Ready • English, Hindi, Bengali, Tamil, Marathi supported</span>
+            </div>
+            
+            <button
+              id="analyze-submit-btn"
+              onclick="triggerLegalAnalysis()"
+              class="bg-brand-900 hover:bg-brand-800 text-white px-6 py-2.5 rounded-xl font-bold text-xs flex items-center space-x-2 shadow-lg shadow-blue-900/20 transition-all hover:scale-[1.02]"
+            >
+              <span>Analyze & Match Verified Providers</span>
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="analysis-loading" class="hidden glass-card rounded-2xl p-12 text-center space-y-4">
+        <div class="w-12 h-12 border-4 border-brand-200 border-t-brand-900 rounded-full animate-spin mx-auto"></div>
+        <h3 class="text-base font-bold text-slate-800">Processing Natural Language & Legal Categorization...</h3>
+        <p class="text-xs text-slate-500">Mapping statutory Indian Acts, evaluating urgency, and ranking verified providers across 6 explainable dimensions.</p>
+      </div>
+
+      <!-- Analysis & Diagnostic Results Area (Dynamic) -->
+      <div id="diagnostic-results-section" class="hidden space-y-6">
+
+        <!-- STEP 1: AI Legal Diagnostic & Routing Card -->
+        <div class="glass-card rounded-2xl p-6 border-l-4 border-brand-900">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-200 pb-4">
+            <div>
+              <div class="flex items-center space-x-2 mb-1">
+                <span class="text-xs font-bold uppercase tracking-wider text-brand-900 bg-blue-100 px-2.5 py-0.5 rounded-md">Step 1 • AI Legal Diagnosis</span>
+                <span id="detected-lang-badge" class="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md font-semibold">Language: English</span>
+                <span id="urgency-level-badge" class="text-xs bg-amber-100 text-amber-900 px-2 py-0.5 rounded-md font-semibold">High Urgency</span>
+              </div>
+              <h2 id="diagnosed-category-title" class="text-xl font-extrabold text-slate-900">Property & Land Disputes</h2>
+              <p id="diagnosed-sub-category" class="text-xs text-slate-500 font-medium">Ancestral Land Encroachment & Possession Injunction</p>
+            </div>
+
+            <!-- Smart Service Route Box -->
+            <div class="bg-blue-50/80 border border-blue-200 rounded-xl p-3 text-right">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-blue-700 block">Recommended Service Route</span>
+              <span id="recommended-service-badge" class="text-sm font-extrabold text-brand-900 block mt-0.5">Advocate (District Court)</span>
+              <span id="eligibility-badge" class="text-[11px] text-emerald-700 font-semibold block">Subsidized / Free Aid Eligible</span>
+            </div>
+          </div>
+
+          <!-- Diagnostic Details Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 text-xs">
+            
+            <!-- Applicable Acts -->
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+              <h4 class="font-bold text-slate-800 flex items-center space-x-1.5 mb-2">
+                <i data-lucide="book-open" class="w-3.5 h-3.5 text-blue-600"></i>
+                <span>Applicable Indian Acts & Sections</span>
+              </h4>
+              <ul id="applicable-acts-list" class="space-y-1.5 text-slate-600 font-medium">
+                <!-- Dynamic items -->
+              </ul>
+            </div>
+
+            <!-- Citizen Rights Summary -->
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+              <h4 class="font-bold text-slate-800 flex items-center space-x-1.5 mb-2">
+                <i data-lucide="shield" class="w-3.5 h-3.5 text-emerald-600"></i>
+                <span>Your Immediate Legal Protections</span>
+              </h4>
+              <p id="citizen-rights-text" class="text-slate-600 leading-relaxed">
+                You have the right to seek an immediate status-quo injunction against unlawful eviction.
+              </p>
+            </div>
+
+            <!-- Timeline & Expected Costs -->
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+              <h4 class="font-bold text-slate-800 flex items-center space-x-1.5 mb-2">
+                <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-600"></i>
+                <span>Estimated Resolution & Cost</span>
+              </h4>
+              <div class="space-y-2">
+                <div>
+                  <span class="text-slate-400 block text-[10px]">Estimated Timeline:</span>
+                  <span id="estimated-timeline-val" class="font-semibold text-slate-700">1 to 3 Months (Injunction)</span>
+                </div>
+                <div>
+                  <span class="text-slate-400 block text-[10px]">Consultation Cost Range:</span>
+                  <span id="estimated-cost-val" class="font-semibold text-slate-700">₹0 (Legal Aid) to ₹500</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- STEP 2: Explainable Matched Professionals -->
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="flex items-center space-x-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-md">Step 2 • Explainable Matching</span>
+                <h3 class="text-lg font-extrabold text-slate-900">Top Recommended & Verified Professionals</h3>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">Ranked using multi-factor weights (Domain 30%, Location 20%, Language 15%, Budget 15%, SLA 10%, Trust 10%).</p>
+            </div>
+            <div class="text-xs text-slate-500 font-medium">
+              <span id="matched-count-badge" class="bg-slate-200 text-slate-800 px-2.5 py-1 rounded-full font-bold">12 Providers Evaluated</span>
+            </div>
+          </div>
+
+          <!-- Matched Provider Cards Grid -->
+          <div id="matched-providers-container" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <!-- Dynamic Matched Provider Cards with Explainability Accordions -->
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ==================== TAB 2: NOTICE / DOCUMENT SCANNER ==================== -->
+    <section id="view-scanner" class="hidden space-y-6">
+      <div class="glass-card rounded-2xl p-6 sm:p-8">
+        <div class="max-w-3xl">
+          <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold mb-3">
+            <i data-lucide="file-check" class="w-3.5 h-3.5 text-amber-600"></i>
+            <span>Instant Document Risk & Statutory Deadline Scanner</span>
+          </div>
+          <h2 class="text-2xl font-extrabold text-slate-900">Scan Legal Notices, FIRs & Agreements</h2>
+          <p class="text-xs text-slate-600 mt-1">Paste notice text to receive a plain-language breakdown of risk level, strict statutory response deadlines, and mandatory immediate steps.</p>
+        </div>
+
+        <!-- Sample Document Fillers -->
+        <div class="mt-4 flex flex-wrap gap-2 text-xs">
+          <span class="text-slate-500 font-semibold self-center">Try Sample Notice:</span>
+          <button onclick="fillSampleDocument('cheque')" class="bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded text-slate-700 font-medium transition-all">📄 Sec 138 Cheque Notice</button>
+          <button onclick="fillSampleDocument('eviction')" class="bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded text-slate-700 font-medium transition-all">📄 Tenant Eviction Notice</button>
+          <button onclick="fillSampleDocument('fir')" class="bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded text-slate-700 font-medium transition-all">📄 Police FIR / Cognizable Complaint</button>
+        </div>
+
+        <div class="mt-4 space-y-4">
+          <textarea
+            id="scanner-document-text"
+            rows="6"
+            placeholder="Paste complete or excerpted text of the legal notice, police complaint, or contract..."
+            class="w-full bg-white border border-slate-300 rounded-xl p-4 text-xs text-slate-800 font-mono focus:ring-2 focus:ring-brand-500 focus:border-brand-500 shadow-sm"
+          ></textarea>
+
+          <div class="flex justify-end">
+            <button
+              onclick="triggerDocumentScan()"
+              class="bg-brand-900 hover:bg-brand-800 text-white px-6 py-2 rounded-xl text-xs font-bold flex items-center space-x-2 shadow-md transition-all"
+            >
+              <i data-lucide="shield-alert" class="w-4 h-4"></i>
+              <span>Perform Plain-Language Risk Audit</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Scanner Result Area -->
+        <div id="scanner-result-box" class="hidden mt-6 bg-slate-50 rounded-xl p-5 border border-slate-200 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div>
+              <span id="doc-risk-badge" class="text-xs font-bold px-2.5 py-0.5 rounded uppercase bg-red-100 text-red-800">High Risk</span>
+              <h3 id="doc-classification-title" class="text-base font-extrabold text-slate-900 mt-1">Section 138 Statutory Demand Notice</h3>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] text-slate-400 block font-semibold">Recommended Assistance</span>
+              <span id="doc-rec-service" class="text-xs font-bold text-brand-900">Advocate (District Court)</span>
+            </div>
+          </div>
+
+          <p id="doc-summary-text" class="text-xs text-slate-700 leading-relaxed font-medium"></p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="bg-red-50/70 p-3 rounded-lg border border-red-200">
+              <h4 class="font-bold text-red-900 mb-1.5 flex items-center space-x-1">
+                <i data-lucide="alarm-clock" class="w-3.5 h-3.5 text-red-600"></i>
+                <span>Strict Statutory Deadlines</span>
+              </h4>
+              <ul id="doc-deadlines-list" class="space-y-1 text-red-800"></ul>
+            </div>
+
+            <div class="bg-emerald-50/70 p-3 rounded-lg border border-emerald-200">
+              <h4 class="font-bold text-emerald-900 mb-1.5 flex items-center space-x-1">
+                <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600"></i>
+                <span>Immediate Recommended Action</span>
+              </h4>
+              <p id="doc-action-text" class="text-emerald-800 font-medium leading-relaxed"></p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: LSP & NYAYCREDITS DASHBOARD ==================== -->
+    <section id="view-provider" class="hidden space-y-6">
+      
+      <!-- Provider Header & Wallet Card -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Profile Card -->
+        <div class="glass-card rounded-2xl p-6 lg:col-span-2 space-y-4">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center space-x-4">
+              <img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?w=150&auto=format&fit=crop&q=80" alt="Advocate Profile" class="w-16 h-16 rounded-xl object-cover border-2 border-brand-900 shadow-sm">
+              <div>
+                <div class="flex items-center space-x-2">
+                  <h2 class="text-lg font-black text-slate-900">Adv. Rajesh Kumar Sen</h2>
+                  <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center space-x-1">
+                    <i data-lucide="check-check" class="w-3 h-3 text-emerald-600"></i>
+                    <span>Bar Council Verified</span>
+                  </span>
+                </div>
+                <p class="text-xs text-slate-500 font-medium">Bar ID: <span class="font-mono font-bold text-slate-700">WB/1482/2014</span> • Calcutta High Court & Alipore District</p>
+                <div class="flex items-center space-x-3 text-xs text-slate-600 mt-1">
+                  <span>⭐ 4.9 (184 Reviews)</span>
+                  <span>⚖️ 310 Cases Resolved</span>
+                  <span>🛡️ NyayTrust Score: 98/100</span>
+                </div>
+              </div>
+            </div>
+
+            <span class="bg-amber-100 text-amber-900 border border-amber-200 text-xs font-bold px-3 py-1 rounded-lg">
+              Pro Bono Champion
+            </span>
+          </div>
+
+          <!-- Verification Simulator -->
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <h4 class="text-xs font-bold text-slate-800 mb-1 flex items-center space-x-1.5">
+              <i data-lucide="shield-check" class="w-3.5 h-3.5 text-blue-600"></i>
+              <span>Live Bar Council Licensure & Identity Verification Engine</span>
+            </h4>
+            <div class="flex gap-2 mt-2">
+              <input id="test-bar-id-input" type="text" value="WB/1482/2014" placeholder="Enter Bar ID (e.g. WB/1482/2014 or D/2410/2012)" class="flex-1 bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-mono">
+              <button onclick="testBarIdVerification()" class="bg-brand-900 hover:bg-brand-800 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition-all">Verify Credentials</button>
+            </div>
+            <div id="bar-verify-result" class="mt-2 text-xs hidden"></div>
+          </div>
+        </div>
+
+        <!-- NyayCredits Wallet Card -->
+        <div class="glass-card rounded-2xl p-6 bg-gradient-to-br from-amber-500/10 via-white to-blue-500/10 border border-amber-200/80 space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-800">NyayCredits Reward Wallet</span>
+            <i data-lucide="coins" class="w-5 h-5 text-amber-500"></i>
+          </div>
+
+          <div>
+            <div class="flex items-baseline space-x-2">
+              <span id="wallet-credits-val" class="text-3xl font-black text-slate-900">1,450</span>
+              <span class="text-sm font-bold text-amber-600">🪙 NyayCredits</span>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-1">Earned via Pro Bono representation, Legal Aid cases, and 5-star citizen reviews.</p>
+          </div>
+
+          <div class="space-y-1.5 text-xs border-t border-slate-200/80 pt-3">
+            <div class="flex justify-between font-medium">
+              <span class="text-slate-600">Tier Status:</span>
+              <span class="font-bold text-brand-900">Tier 3 (Pro Bono Champion)</span>
+            </div>
+            <div class="flex justify-between font-medium">
+              <span class="text-slate-600">Next Milestone:</span>
+              <span class="text-slate-700">550 credits to National Leader</span>
+            </div>
+            <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden mt-1">
+              <div class="bg-gradient-to-r from-amber-400 to-amber-600 h-full rounded-full w-[72%]"></div>
+            </div>
+          </div>
+
+          <div class="pt-2">
+            <span class="text-[10px] text-slate-500 block font-semibold mb-1">Provider Perks Unlocked:</span>
+            <div class="flex flex-wrap gap-1 text-[10px]">
+              <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded font-semibold">Priority Routing</span>
+              <span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-semibold">Govt Empanelment</span>
+              <span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-semibold">Free SCC Online Tools</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Provider Recent Bookings List -->
+      <div class="glass-card rounded-2xl p-6 space-y-4">
+        <h3 class="text-sm font-bold text-slate-900 flex items-center space-x-2">
+          <i data-lucide="calendar" class="w-4 h-4 text-brand-900"></i>
+          <span>Live Scheduled Consultations & Case Referrals</span>
+        </h3>
+        
+        <div id="provider-bookings-list" class="space-y-2.5 text-xs">
+          <!-- Dynamic Booking Cards -->
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-center space-x-2">
+                <span class="font-bold text-slate-900">Citizen: Smt. Sunita Mondal</span>
+                <span class="bg-blue-100 text-blue-800 px-2 py-0.2 rounded font-semibold text-[10px]">Tele-Law Video</span>
+                <span class="bg-amber-100 text-amber-800 px-2 py-0.2 rounded font-semibold text-[10px]">+150 🪙 Legal Aid Case</span>
+              </div>
+              <p class="text-slate-500 mt-0.5">Dispute: Ancestral Land Partition • Preferred Lang: Bengali • Alipore District</p>
+            </div>
+            <a href="https://meet.nyaysetu.gov.in/tele-law/sample" target="_blank" class="bg-brand-900 hover:bg-brand-800 text-white px-3 py-1.5 rounded-lg font-bold flex items-center space-x-1 shadow-sm">
+              <i data-lucide="video" class="w-3.5 h-3.5"></i>
+              <span>Join Secure Consultation</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== TAB 4: GOVERNMENT & DISHA 2.0 HUB ==================== -->
+    <section id="view-govt" class="hidden space-y-6">
+      
+      <!-- Key Impact Metrics (Slide 5) -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="glass-card rounded-2xl p-5 border-t-4 border-emerald-500">
+          <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Search & Discovery Time</span>
+          <div class="flex items-baseline space-x-1.5 mt-1">
+            <span class="text-2xl sm:text-3xl font-black text-slate-900">60% ↓</span>
+            <span class="text-xs font-bold text-emerald-600">Saved</span>
+          </div>
+          <p class="text-[10px] text-slate-400 mt-1">Faster discovery of verified legal professionals.</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-5 border-t-4 border-blue-500">
+          <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Explainable Match Accuracy</span>
+          <div class="flex items-baseline space-x-1.5 mt-1">
+            <span class="text-2xl sm:text-3xl font-black text-slate-900">85% ↑</span>
+            <span class="text-xs font-bold text-blue-600">Precision</span>
+          </div>
+          <p class="text-[10px] text-slate-400 mt-1">Right citizen to right provider match.</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-5 border-t-4 border-purple-500">
+          <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Misrouted Cases</span>
+          <div class="flex items-baseline space-x-1.5 mt-1">
+            <span class="text-2xl sm:text-3xl font-black text-slate-900">75% ↓</span>
+            <span class="text-xs font-bold text-purple-600">Reduction</span>
+          </div>
+          <p class="text-[10px] text-slate-400 mt-1">Zero wrong court filing delays.</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-5 border-t-4 border-amber-500">
+          <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">First Consultation Delay</span>
+          <div class="flex items-baseline space-x-1.5 mt-1">
+            <span class="text-2xl sm:text-3xl font-black text-slate-900">1.8 Days</span>
+            <span class="text-xs font-bold text-amber-600">from 45 days</span>
+          </div>
+          <p class="text-[10px] text-slate-400 mt-1">96% turnaround acceleration.</p>
+        </div>
+      </div>
+
+      <!-- Charts & Regional Supply Gap Heatmap -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Category Distribution Chart -->
+        <div class="glass-card rounded-2xl p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-slate-900 flex items-center space-x-2">
+              <i data-lucide="pie-chart" class="w-4 h-4 text-brand-900"></i>
+              <span>National Dispute Category Breakdown</span>
+            </h3>
+            <span class="text-xs text-slate-400 font-semibold">1,350 Total Cases</span>
+          </div>
+          <div class="h-64 flex items-center justify-center">
+            <canvas id="disputeChart"></canvas>
+          </div>
+        </div>
+
+        <!-- DISHA 2.0 Integration Hub -->
+        <div class="glass-card rounded-2xl p-6 space-y-4">
+          <h3 class="text-sm font-bold text-slate-900 flex items-center space-x-2">
+            <i data-lucide="landmark" class="w-4 h-4 text-brand-900"></i>
+            <span>DISHA 2.0 & National Legal Aid Alignment</span>
+          </h3>
+
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div class="bg-blue-50 p-3 rounded-xl border border-blue-200">
+              <span class="text-slate-500 block text-[10px]">Tele-Law Sessions:</span>
+              <span class="text-lg font-black text-blue-900">12,840</span>
+            </div>
+            <div class="bg-amber-50 p-3 rounded-xl border border-amber-200">
+              <span class="text-slate-500 block text-[10px]">Nyaya Bandhu Pro Bono:</span>
+              <span class="text-lg font-black text-amber-900">4,650 Hours</span>
+            </div>
+            <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200">
+              <span class="text-slate-500 block text-[10px]">Estimated Citizen Savings:</span>
+              <span class="text-lg font-black text-emerald-900">₹14.2 Crore</span>
+            </div>
+            <div class="bg-purple-50 p-3 rounded-xl border border-purple-200">
+              <span class="text-slate-500 block text-[10px]">District Coverage:</span>
+              <span class="text-lg font-black text-purple-900">512 Districts</span>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs text-slate-600 leading-relaxed">
+            <span class="font-bold text-slate-800 block mb-1">Government Objective (DISHA 2.0 Scheme ₹255 Cr Outlay):</span>
+            NyaySetu acts as an intelligent router and trust bridge between citizens at Common Service Centres (CSCs) and empanelled panel lawyers under Tele-Law and Nyaya Bandhu.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- State Legal Demand vs Supply Heatmap Table -->
+      <div class="glass-card rounded-2xl p-6 space-y-4">
+        <h3 class="text-sm font-bold text-slate-900 flex items-center space-x-2">
+          <i data-lucide="map" class="w-4 h-4 text-brand-900"></i>
+          <span>Regional Legal Demand vs Supply Deficit Matrix</span>
+        </h3>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left">
+            <thead class="bg-slate-100 text-slate-600 uppercase text-[10px] font-bold border-b border-slate-200">
+              <tr>
+                <th class="py-2.5 px-3">State / District</th>
+                <th class="py-2.5 px-3">Demand Volume</th>
+                <th class="py-2.5 px-3">Active LSPs</th>
+                <th class="py-2.5 px-3">Supply Gap Status</th>
+                <th class="py-2.5 px-3">Prevalent Dispute Type</th>
+                <th class="py-2.5 px-3">Tele-Law Utilization</th>
+              </tr>
+            </thead>
+            <tbody id="heatmap-table-body" class="divide-y divide-slate-200 font-medium">
+              <!-- Dynamic Rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==================== BOOKING MODAL ==================== -->
+  <div id="booking-modal" class="fixed inset-0 modal-backdrop z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-blue-700">Confirm Consultation</span>
+          <h3 id="modal-provider-name" class="text-base font-extrabold text-slate-900">Adv. Rajesh Kumar Sen</h3>
+        </div>
+        <button onclick="closeBookingModal()" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Your Full Name</label>
+          <input id="book-citizen-name" type="text" value="Sunita Mondal" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">WhatsApp / Phone Number</label>
+          <input id="book-citizen-phone" type="tel" value="+91 98301 24567" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Select Time Slot</label>
+            <select id="book-slot-select" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs font-medium">
+              <option value="Today, 4:30 PM">Today, 4:30 PM</option>
+              <option value="Today, 6:00 PM">Today, 6:00 PM</option>
+              <option value="Tomorrow, 10:30 AM">Tomorrow, 10:30 AM</option>
+              <option value="Tomorrow, 3:00 PM">Tomorrow, 3:00 PM</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Consultation Mode</label>
+            <select id="book-mode-select" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs font-medium">
+              <option value="tele-law">Tele-Law (Encrypted Video)</option>
+              <option value="in-person">In-Person Chamber</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="p-3 bg-blue-50 rounded-xl border border-blue-200">
+          <div class="flex justify-between items-center font-semibold">
+            <span class="text-blue-900">Total Consultation Fee:</span>
+            <span id="modal-fee-display" class="text-sm font-black text-brand-900">₹500</span>
+          </div>
+          <span class="text-[10px] text-blue-700 block mt-0.5">Subsidized under NyaySetu Access-to-Justice guidelines.</span>
+        </div>
+      </div>
+
+      <div class="flex justify-end space-x-2 pt-2">
+        <button onclick="closeBookingModal()" class="px-4 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100">Cancel</button>
+        <button onclick="confirmBookingSubmit()" class="bg-brand-900 hover:bg-brand-800 text-white px-5 py-2 rounded-lg text-xs font-bold shadow-md">
+          Confirm & Generate Tele-Law Link
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== BOOKING SUCCESS MODAL ==================== -->
+  <div id="booking-success-modal" class="fixed inset-0 modal-backdrop z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-slate-200 text-center">
+      <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-sm">
+        <i data-lucide="check" class="w-8 h-8"></i>
+      </div>
+
+      <h3 class="text-lg font-black text-slate-900">Consultation Confirmed!</h3>
+      <p id="success-booking-msg" class="text-xs text-slate-600 leading-relaxed"></p>
+
+      <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-left space-y-1">
+        <div class="flex justify-between">
+          <span class="text-slate-500">Booking Reference:</span>
+          <span id="success-booking-id" class="font-mono font-bold text-slate-800">NYAY-94821</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-500">Scheduled Time:</span>
+          <span id="success-booking-time" class="font-semibold text-slate-800">Today, 4:30 PM</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-500">Provider NyayCredits Awarded:</span>
+          <span class="font-bold text-amber-600">+150 🪙</span>
+        </div>
+      </div>
+
+      <div class="pt-2">
+        <button onclick="closeSuccessModal()" class="w-full bg-brand-900 hover:bg-brand-800 text-white py-2.5 rounded-xl text-xs font-bold transition-all">
+          Done & Return to Case
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Verification Modal -->
+  <div id="verification-modal" class="fixed inset-0 modal-backdrop z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+        <h3 class="text-sm font-bold text-slate-900 flex items-center space-x-1.5">
+          <i data-lucide="shield-check" class="w-4 h-4 text-blue-600"></i>
+          <span>Bar Council Licensure Checker</span>
+        </h3>
+        <button onclick="closeVerificationModal()" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">State Bar Council Enrolment ID</label>
+          <input id="quick-bar-id" type="text" placeholder="e.g. WB/1482/2014 or D/2410/2012" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-mono text-xs">
+        </div>
+        <button onclick="executeQuickBarCheck()" class="w-full bg-brand-900 hover:bg-brand-800 text-white py-2 rounded-lg font-bold">
+          Check Bar Registry Status
+        </button>
+        <div id="quick-bar-result" class="p-3 bg-slate-50 rounded-xl border border-slate-200 hidden"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="font-bold brand-font text-white">NyaySetu (न्यायसेतु)</span>
+        <span>• AI-Powered Legal Service Exchange • Built for Hackspire 2026</span>
+      </div>
+      <div class="flex items-center space-x-4 text-slate-400">
+        <span>Aligned with DISHA 2.0 & NALSA</span>
+        <span>•</span>
+        <span>Explainable Matching Engine v1.0</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Frontend Logic -->
+  <script src="/static/app.js"></script>
+</body>
+</html>
