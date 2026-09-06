@@ -8,19 +8,29 @@ class AnalyzeIssueRequest(BaseModel):
     budget_max: Optional[float] = 1000.0
     preferred_mode: Optional[str] = "any"  # "tele-consultation", "in-person", "any"
 
+class ConstitutionRef(BaseModel):
+    article: str
+    title: str
+    summary: str
+
 class LegalDiagnosticResponse(BaseModel):
-    detected_language: str
-    translated_summary: str
-    primary_category: str
+    is_valid_legal_query: bool = True
+    query_nature: str = "legal"  # "legal", "medical", "out_of_domain", "insufficient_context"
+    guidance_message: Optional[str] = None
+    suggested_tips: List[str] = []
+    detected_language: str = "English"
+    translated_summary: str = ""
+    primary_category: str = ""
     sub_category: Optional[str] = None
-    urgency_level: str  # "Immediate / Emergency", "High", "Moderate", "Standard / Advisory"
-    recommended_service_type: str  # "Advocate (District Court)", "Certified Mediator (ADR)", etc.
-    applicable_acts: List[str]
-    citizen_rights_summary: str
-    estimated_timeline: str
-    estimated_cost_range: str
-    free_legal_aid_eligible: bool
-    key_factors_extracted: Dict[str, Any]
+    urgency_level: str = "Standard / Advisory"
+    recommended_service_type: str = "Advocate (District Court)"
+    applicable_acts: List[str] = []
+    constitutional_articles: List[ConstitutionRef] = []
+    citizen_rights_summary: str = ""
+    estimated_timeline: str = ""
+    estimated_cost_range: str = ""
+    free_legal_aid_eligible: bool = False
+    key_factors_extracted: Dict[str, Any] = {}
 
 class MatchRequest(BaseModel):
     query_text: str
@@ -32,19 +42,21 @@ class MatchRequest(BaseModel):
     service_type: Optional[str] = None
     tele_consultation: bool = True
     legal_aid_required: bool = False
+    affiliation_filter: Optional[str] = "all"  # "all", "nyaya_bandhu", "scaora", "legal_aid"
 
 class MatchExplanation(BaseModel):
     overall_match_score: int  # 0 - 100
     why_recommended: str
-    factor_breakdown: Dict[str, int]  # {"domain_expertise": 95, "location": 90, "language": 100, "budget": 92, "sla_availability": 88, "trust_score": 98}
+    factor_breakdown: Dict[str, int]
     highlights: List[str]
     alternative_suggestion: Optional[str] = None
 
 class Provider(BaseModel):
     id: str
     name: str
-    title: str  # e.g., "Senior Advocate", "Certified Mediator", "DLSA Panel Counsel"
+    title: str
     provider_type: str
+    affiliation: Optional[str] = "State Bar Council"
     bar_council_id: str
     bar_council_state: str
     verification_status: str  # "Verified", "Under Review", "Government Empanelled"
@@ -76,11 +88,14 @@ class DocumentScanRequest(BaseModel):
     document_type: Optional[str] = "Notice / FIR / Agreement"
 
 class DocumentScanResponse(BaseModel):
+    is_valid_document: bool = True
+    guidance_message: Optional[str] = None
     summary: str
     document_classification: str
     risk_level: str  # "High Risk", "Medium Attention", "Standard Form"
     critical_deadlines: List[str]
     legal_implications: List[str]
+    constitutional_context: Optional[str] = None
     recommended_immediate_action: str
     recommended_service_type: str
 

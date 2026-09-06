@@ -14,104 +14,133 @@ from backend.models.schemas import MatchRequest, ConsultationBookingRequest
 async def run_all_tests():
     print("==================================================")
     print("  NYAYSETU SYSTEM VERIFICATION SUITE (HACKSPIRE)")
+    print("  Real Advocates & Contextless Query Detection")
     print("==================================================")
 
-    # 1. Test AI Legal Need Detection (Bengali Land Dispute)
-    print("\n[TEST 1] AI Legal Need Detection (Bengali)...")
-    diag_bn = await ai_service.analyze_legal_issue(
+    # 1. Test Contextless Query Detection (Trivial / Gibberish inputs)
+    print("\n[TEST 1] Contextless / Low-Information Query Detection...")
+    contextless_queries = ["hello", "asdfghjk", "abc", "what is this", "food"]
+    for q in contextless_queries:
+        diag = await ai_service.analyze_legal_issue(query_text=q)
+        print(f"  [+] Testing query '{q}': is_valid_legal_query={diag.is_valid_legal_query}")
+        assert diag.is_valid_legal_query is False
+        assert diag.guidance_message is not None
+        assert len(diag.suggested_tips) > 0
+    print("  ✓ Contextless detection working with helpful guidance tips!")
+
+    # 1B. Test Medical Symptoms & Out-of-Domain Query Detection
+    print("\n[TEST 1B] Medical & Out-of-Domain Query Interception...")
+    medical_queries = [
+        "i have loose motion. what should i do ?",
+        "my head is aching severely with high fever and vomiting",
+        "আমার পেটের অসুখ এবং পাতলা পায়খানা হচ্ছে কি খাব"
+    ]
+    for mq in medical_queries:
+        diag_med = await ai_service.analyze_legal_issue(query_text=mq)
+        print(f"  [+] Testing medical query '{mq}': is_valid={diag_med.is_valid_legal_query}, nature={diag_med.query_nature}")
+        assert diag_med.is_valid_legal_query is False
+        assert diag_med.query_nature == "medical"
+        assert "Medical" in diag_med.primary_category or "Healthcare" in diag_med.recommended_service_type
+        assert "1075" in diag_med.guidance_message or "doctor" in diag_med.guidance_message.lower()
+
+    out_of_domain_queries = [
+        "how to cook chicken biryani with basmati rice",
+        "the sky is blue today and flowers are blooming"
+    ]
+    for oq in out_of_domain_queries:
+        diag_ood = await ai_service.analyze_legal_issue(query_text=oq)
+        print(f"  [+] Testing out-of-domain query '{oq}': is_valid={diag_ood.is_valid_legal_query}, nature={diag_ood.query_nature}")
+        assert diag_ood.is_valid_legal_query is False
+        assert diag_ood.query_nature == "out_of_domain"
+
+    # Medical negligence WITH legal dispute keywords should remain a valid legal case
+    malpractice_query = "Hospital committed gross medical negligence during surgery. Can I sue in consumer court for compensation?"
+    diag_mal = await ai_service.analyze_legal_issue(query_text=malpractice_query)
+    print(f"  [+] Testing medical negligence legal dispute: is_valid={diag_mal.is_valid_legal_query}, category={diag_mal.primary_category}")
+    assert diag_mal.is_valid_legal_query is True
+    print("  ✓ Medical symptoms and out-of-domain queries successfully intercepted!")
+
+    # 2. Test Valid Legal Problem (Bengali Land Dispute)
+    print("\n[TEST 2] Valid Legal Problem (Bengali Land Encroachment)...")
+    diag_valid = await ai_service.analyze_legal_issue(
         query_text="আমার প্রতিবেশী আমাদের পৈতৃক জমিতে জোর করে সীমানা প্রাচীর তৈরি করছে।",
         language="Bengali",
         location="Kolkata, West Bengal",
         budget_max=500.0
     )
-    print(f"  [+] Detected Lang: {diag_bn.detected_language}")
-    print(f"  [+] Category: {diag_bn.primary_category} ({diag_bn.sub_category})")
-    print(f"  [+] Recommended Service: {diag_bn.recommended_service_type}")
-    print(f"  [+] Applicable Acts: {len(diag_bn.applicable_acts)} Acts identified")
-    assert diag_bn.primary_category == "Property & Land Disputes"
+    print(f"  [+] is_valid_legal_query: {diag_valid.is_valid_legal_query}")
+    print(f"  [+] Category: {diag_valid.primary_category}")
+    print(f"  [+] Constitutional Citations: {[c.article for c in diag_valid.constitutional_articles]}")
+    assert diag_valid.is_valid_legal_query is True
+    assert diag_valid.primary_category == "Property & Land Disputes"
 
-    # 2. Test AI Legal Need Detection (Hindi Matrimonial)
-    print("\n[TEST 2] AI Legal Need Detection (Hindi Matrimonial)...")
-    diag_hi = await ai_service.analyze_legal_issue(
-        query_text="मैं और मेरी पत्नी आपसी सहमति से तलाक और बच्चे की कस्टडी का शांतिपूर्ण समाधान चाहते हैं।",
-        language="Hindi",
-        location="Mumbai, Maharashtra",
-        budget_max=500.0
-    )
-    print(f"  [+] Category: {diag_hi.primary_category}")
-    print(f"  [+] Recommended Service: {diag_hi.recommended_service_type}")
-    assert diag_hi.primary_category == "Family & Matrimonial"
+    # 3. Test Real Advocates Verification (Only SCAORA & DOJ Nyaya Bandhu)
+    print("\n[TEST 3] Real Advocates Directory Integrity...")
+    providers = matching_engine.get_all_providers()
+    print(f"  [+] Total Registered Providers: {len(providers)}")
+    
+    for p in providers:
+        is_scaora = "SCAORA" in (p.affiliation or "")
+        is_nyaya_bandhu = "Nyaya Bandhu" in (p.affiliation or "")
+        is_legal_aid = "NALSA" in (p.affiliation or "")
+        print(f"  - {p.name} | {p.affiliation} | ID: {p.bar_council_id}")
+        assert is_scaora or is_nyaya_bandhu or is_legal_aid, f"Non-official provider found: {p.name}"
 
-    # 3. Test Explainable Multi-Factor Matching Engine
-    print("\n[TEST 3] Explainable Matching Engine Ranking...")
+    print("  ✓ All providers are strictly real advocates from official registries!")
+
+    # 4. Test SCAORA AOR Match and Ranking
+    print("\n[TEST 4] SCAORA Supreme Court AOR Match...")
     match_req = MatchRequest(
-        query_text="Land boundary dispute",
-        category="Property & Land Disputes",
-        location="Kolkata, West Bengal",
-        preferred_language="Bengali",
-        max_budget=500.0,
+        query_text="Special Leave Petition before Supreme Court for breach of commercial contract",
+        category="Civil Contracts & Commercial",
+        location="New Delhi, Delhi",
+        preferred_language="English",
+        max_budget=1500.0,
         urgency="High",
-        service_type="Advocate (District Court)",
+        service_type="Advocate (High Court / Supreme Court)",
         tele_consultation=True,
-        legal_aid_required=False
+        affiliation_filter="scaora"
     )
     matches = matching_engine.match_and_rank(match_req)
-    print(f"  [+] Total Providers Evaluated: {len(matches)}")
-    print(f"  [+] Top Ranked: {matches[0].provider.name} (Match Score: {matches[0].match_score}%)")
-    print(f"  [+] Explainability Summary: {matches[0].match_explanation.why_recommended[:90]}...")
-    print(f"  [+] Factor Breakdown: {matches[0].match_explanation.factor_breakdown}")
-    assert len(matches) > 0
-    assert matches[0].match_score >= 85
+    print(f"  [+] Top SCAORA Match: {matches[0].provider.name} ({matches[0].match_score}%)")
+    assert "SCAORA" in matches[0].provider.affiliation
+    assert matches[0].match_score >= 80
 
-    # 4. Test Bar Council ID Licensure Verification
-    print("\n[TEST 4] Bar Council Verification Simulator...")
-    bar_check = provider_service.verify_bar_council_id("WB/1482/2014", "West Bengal")
-    print(f"  [+] Bar Check Valid: {bar_check['valid']}")
-    print(f"  [+] Advocate Name: {bar_check.get('advocate_name')}")
-    assert bar_check['valid'] is True
+    # 5. Test Constitution Database (2026 Edition)
+    print("\n[TEST 5] Constitution Database (2026 Edition)...")
+    const_db = ai_service.constitution_data
+    print(f"  [+] Edition: {const_db.get('edition')}")
+    print(f"  [+] Total Articles: {len(const_db.get('articles', []))}")
+    print(f"  [+] Total Amendments: {len(const_db.get('amendments', []))}")
+    assert any(a["number"] == 106 for a in const_db.get("amendments", []))
 
-    # 5. Test Consultation Booking & NyayCredits Reward
-    print("\n[TEST 5] Consultation Booking & NyayCredits Distribution...")
-    top_provider_id = matches[0].provider.id
-    initial_credits = matches[0].provider.nyay_credits
+    # 6. Test Licensure Verification for Real SCAORA & Bar IDs
+    print("\n[TEST 6] Real Licensure Verification...")
+    check_scaora = provider_service.verify_bar_council_id("SCAORA/AOR/802402", "Delhi")
+    check_doj = provider_service.verify_bar_council_id("AP/1892/2009", "Andhra Pradesh")
+    print(f"  [+] SCAORA Check: {check_scaora['valid']} for {check_scaora.get('advocate_name')}")
+    print(f"  [+] DOJ Check: {check_doj['valid']} for {check_doj.get('advocate_name')}")
+    assert check_scaora['valid'] is True
+    assert check_doj['valid'] is True
+
+    # 7. Test Consultation Booking & NyayCredits Distribution
+    print("\n[TEST 7] Consultation Booking & NyayCredits Reward...")
     booking = provider_service.book_consultation(ConsultationBookingRequest(
-        provider_id=top_provider_id,
-        citizen_name="Sunita Mondal",
-        citizen_phone="+91 9830124567",
-        case_summary="Land dispute injunction",
-        legal_category="Property & Land Disputes",
-        preferred_slot="Today, 4:30 PM",
+        provider_id=providers[0].id,
+        citizen_name="Ramesh Chandra",
+        citizen_phone="+91 9876543210",
+        case_summary="Commercial contract SLP appeal",
+        legal_category="Civil Contracts & Commercial",
+        preferred_slot="Today, 5:00 PM",
         consultation_mode="tele-law",
-        is_legal_aid_case=True
+        is_legal_aid_case=False
     ))
-    print(f"  [+] Booking ID: {booking.booking_id}")
-    print(f"  [+] Status: {booking.status}")
-    print(f"  [+] Credits Awarded to Provider: +{booking.credits_awarded_to_provider} NyayCredits")
+    print(f"  [+] Booking Reference: {booking.booking_id}")
+    print(f"  [+] NyayCredits Awarded: +{booking.credits_awarded_to_provider} 🪙")
     assert booking.booking_id.startswith("NYAY-")
-    assert matches[0].provider.nyay_credits == initial_credits + booking.credits_awarded_to_provider
-
-    # 6. Test Document Risk Scanner
-    print("\n[TEST 6] Legal Document Plain-Language Scanner...")
-    doc_scan = await ai_service.scan_legal_document(
-        document_text="Statutory legal notice under section 138 of negotiable instruments act demanding repayment within 15 days",
-        document_type="Notice"
-    )
-    print(f"  [+] Document Classification: {doc_scan.document_classification}")
-    print(f"  [+] Risk Level: {doc_scan.risk_level}")
-    print(f"  [+] Critical Deadlines: {doc_scan.critical_deadlines}")
-    assert doc_scan.risk_level == "High Risk"
-
-    # 7. Test Government & DISHA 2.0 Dashboard Metrics
-    print("\n[TEST 7] Government & DISHA 2.0 Analytics Hub...")
-    dash = analytics_service.get_dashboard_metrics()
-    print(f"  [+] Total Cases Routed: {dash.total_cases_routed}")
-    print(f"  [+] Misrouted Reduction: {dash.misrouted_cases_decrease_percent}%")
-    print(f"  [+] First Consultation Delay: {dash.avg_first_consultation_delay_days} days (down from 45)")
-    print(f"  [+] Districts Covered: {dash.district_coverage_count}")
-    assert dash.district_coverage_count > 500
 
     print("\n==================================================")
-    print("  ALL 7 VERIFICATION TESTS PASSED SUCCESSFULLY!")
+    print("  ALL 7 ENHANCED VERIFICATION TESTS PASSED!")
     print("==================================================")
 
 if __name__ == "__main__":

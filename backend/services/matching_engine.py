@@ -31,11 +31,20 @@ class MatchingEngine:
 
     def match_and_rank(self, req: MatchRequest) -> List[MatchedProviderResponse]:
         """
-        Multidimensional Explainable Matching Engine
+        Multidimensional Explainable Matching Engine with Nyaya Bandhu & SCAORA affiliation integration.
         """
         results: List[MatchedProviderResponse] = []
 
         for p in self.providers:
+            # Filter by affiliation if requested
+            if req.affiliation_filter and req.affiliation_filter != "all":
+                if req.affiliation_filter == "nyaya_bandhu" and "Nyaya Bandhu" not in (p.affiliation or ""):
+                    continue
+                elif req.affiliation_filter == "scaora" and "SCAORA" not in (p.affiliation or ""):
+                    continue
+                elif req.affiliation_filter == "legal_aid" and "Legal Aid" not in p.provider_type and p.fee_per_consultation > 0:
+                    continue
+
             # Calculate dimensional sub-scores (0 - 100)
             domain_score = self._calc_domain_score(p, req.category, req.service_type)
             location_score = self._calc_location_score(p, req.location, req.tele_consultation)
@@ -45,7 +54,6 @@ class MatchingEngine:
             trust_score = self._calc_trust_score(p)
 
             # Weighted overall match score
-            # Weights: Domain 30%, Location 20%, Language 15%, Budget 15%, Availability 10%, Trust 10%
             overall_score = int(
                 domain_score * 0.30 +
                 location_score * 0.20 +
@@ -54,6 +62,12 @@ class MatchingEngine:
                 availability_score * 0.10 +
                 trust_score * 0.10
             )
+
+            # Boost for verified affiliations
+            if "SCAORA" in (p.affiliation or "") and ("Supreme Court" in req.service_type if req.service_type else False):
+                overall_score = min(100, overall_score + 10)
+            elif "Nyaya Bandhu" in (p.affiliation or "") and (req.legal_aid_required or req.max_budget <= 300):
+                overall_score = min(100, overall_score + 10)
 
             # Generate Explainability & Rationale
             explanation = self._generate_explanation(
@@ -82,14 +96,11 @@ class MatchingEngine:
 
     def _calc_domain_score(self, p: Provider, category: str, service_type: str = None) -> int:
         score = 40
-        # Check domain presence
         if any(category.lower() in d.lower() or d.lower() in category.lower() for d in p.domains):
             score += 45
-        # Experience boost
         exp_boost = min(15, p.years_experience)
         score += exp_boost
 
-        # Service type alignment
         if service_type and service_type.lower() in p.provider_type.lower():
             score = min(100, score + 10)
 
@@ -99,8 +110,11 @@ class MatchingEngine:
         loc_lower = location.lower()
         if p.city.lower() in loc_lower or p.state.lower() in loc_lower or "pan-india" in p.state.lower():
             return 100
+        # Supreme Court AORs have pan-India jurisdiction
+        if "SCAORA" in (p.affiliation or ""):
+            return 95
         if tele_ok:
-            return 82  # Tele-consultation bridge
+            return 82
         return 50
 
     def _calc_language_score(self, p: Provider, language: str) -> int:
@@ -108,7 +122,6 @@ class MatchingEngine:
             return 95
         if any(language.lower() == l.lower() for l in p.languages):
             return 100
-        # English fallback
         if "english" in [l.lower() for l in p.languages]:
             return 75
         return 45
@@ -135,7 +148,7 @@ class MatchingEngine:
 
     def _calc_trust_score(self, p: Provider) -> int:
         base = p.nyay_trust_score
-        if p.verification_status == "Government Empanelled":
+        if p.verification_status == "Government Empanelled" or "SCAORA" in (p.affiliation or ""):
             base = max(base, 98)
         return min(100, base)
 
@@ -148,11 +161,17 @@ class MatchingEngine:
     ) -> MatchExplanation:
         highlights = []
 
+        # Affiliation highlight
+        if "Nyaya Bandhu" in (p.affiliation or ""):
+            highlights.append("Empanelled on official Department of Justice (DOJ) Nyaya Bandhu Pro Bono Panel.")
+        elif "SCAORA" in (p.affiliation or ""):
+            highlights.append("Designated Supreme Court Advocate-on-Record (SCAORA) with Apex Court filing privileges.")
+
         # Domain highlight
         if breakdown["domain_expertise"] >= 85:
             highlights.append(f"Top-tier expertise in {req.category} with {p.years_experience}+ years of verified practice.")
         elif breakdown["domain_expertise"] >= 65:
-            highlights.append(f"Experienced in relevant civil and legal procedures ({p.cases_resolved}+ cases handled).")
+            highlights.append(f"Experienced in relevant court procedures ({p.cases_resolved}+ cases handled).")
 
         # Language highlight
         if breakdown["language_match"] == 100:
@@ -160,31 +179,29 @@ class MatchingEngine:
 
         # Budget highlight
         if p.fee_per_consultation == 0:
-            highlights.append("100% Free Legal Aid subsidized under NALSA / Tele-Law scheme.")
+            highlights.append("100% Free Pro Bono / Legal Aid subsidized under Article 39A & NALSA.")
         elif p.fee_per_consultation <= req.max_budget:
-            highlights.append(f"Affordable consultation fee of ₹{int(p.fee_per_consultation)} fits within your ₹{int(req.max_budget)} limit.")
-        else:
-            highlights.append(f"Consultation fee ₹{int(p.fee_per_consultation)} with flexible payment.")
+            highlights.append(f"Affordable consultation fee of ₹{int(p.fee_per_consultation)} fits within your budget.")
 
         # Location/Court highlight
-        if breakdown["location_jurisdiction"] == 100:
+        if "SCAORA" in (p.affiliation or ""):
+            highlights.append("Appears before Supreme Court of India and appellate tribunals via Tele-Law.")
+        elif breakdown["location_jurisdiction"] == 100:
             highlights.append(f"Active in your local jurisdiction ({p.city}, {p.state}).")
         else:
-            highlights.append(f"Available for instant Tele-Law video/audio consultation.")
+            highlights.append("Available for instant Tele-Law video/audio consultation.")
 
-        # Trust highlight
-        highlights.append(f"NyayTrust Score: {p.nyay_trust_score}/100 • Bar Council Verified ({p.bar_council_id}).")
+        highlights.append(f"NyayTrust Score: {p.nyay_trust_score}/100 • Bar Licensure Verified ({p.bar_council_id}).")
 
-        # Formulate synthesized reason
         summary = (
-            f"Recommended for {req.category} because {p.name} holds a {breakdown['domain_expertise']}% domain alignment, "
+            f"Recommended for {req.category} because {p.name} ({p.affiliation or p.title}) holds a {breakdown['domain_expertise']}% domain alignment, "
             f"speaks {', '.join(p.languages[:2])}, has a {p.rating}★ rating ({p.total_reviews} reviews), "
-            f"and provides verified counsel at ₹{int(p.fee_per_consultation)}."
+            f"and provides verified counsel at {'FREE (Legal Aid)' if p.fee_per_consultation == 0 else '₹' + str(int(p.fee_per_consultation))}."
         )
 
         alt = None
         if score < 70:
-            alt = "Consider exploring DLSA Free Legal Aid Clinic if you need zero-fee representation."
+            alt = "Explore Nyaya Bandhu Pro Bono Panel or DLSA Free Legal Aid Clinic for zero-fee representation."
 
         return MatchExplanation(
             overall_match_score=score,

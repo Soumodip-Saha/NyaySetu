@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NyaySetu | AI Legal Service Routing & Explainable Professional Matching</title>
+  <title>NyaySetu | AI Legal Service Routing & Constitution Knowledge Platform</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚖️</text></svg>">
   
   <!-- Tailwind CSS -->
@@ -58,41 +58,47 @@
             <span class="text-xl font-black brand-font tracking-tight text-brand-900">NyaySetu</span>
             <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-semibold border border-blue-200">Hackspire '26</span>
           </div>
-          <p class="text-[10px] text-slate-500 font-medium tracking-wide">Intelligent Legal Service Routing & Explainable Match</p>
+          <p class="text-[10px] text-slate-500 font-medium tracking-wide">Intelligent Legal Service Routing • Grounded in Constitution of India</p>
         </div>
       </div>
 
       <!-- Main Navigation Tabs -->
-      <nav class="hidden md:flex items-center space-x-1 bg-slate-100/80 p-1 rounded-xl border border-slate-200">
-        <button onclick="switchTab('citizen')" id="tab-citizen" class="nav-tab-btn px-4 py-1.5 rounded-lg text-xs font-semibold transition-all bg-white text-brand-900 shadow-sm">
-          <i data-lucide="compass" class="w-3.5 h-3.5 inline mr-1.5"></i> Citizen Intake & Match
+      <nav class="hidden lg:flex items-center space-x-1 bg-slate-100/80 p-1 rounded-xl border border-slate-200 text-xs">
+        <button onclick="switchTab('citizen')" id="tab-citizen" class="nav-tab-btn px-3.5 py-1.5 rounded-lg font-semibold transition-all bg-white text-brand-900 shadow-sm">
+          <i data-lucide="compass" class="w-3.5 h-3.5 inline mr-1"></i> AI Match
         </button>
-        <button onclick="switchTab('scanner')" id="tab-scanner" class="nav-tab-btn px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all">
-          <i data-lucide="file-search" class="w-3.5 h-3.5 inline mr-1.5"></i> Notice Scanner
+        <button onclick="switchTab('scanner')" id="tab-scanner" class="nav-tab-btn px-3.5 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition-all">
+          <i data-lucide="file-search" class="w-3.5 h-3.5 inline mr-1"></i> Notice Scanner
         </button>
-        <button onclick="switchTab('provider')" id="tab-provider" class="nav-tab-btn px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all">
-          <i data-lucide="award" class="w-3.5 h-3.5 inline mr-1.5"></i> LSP & NyayCredits
+        <button onclick="switchTab('constitution')" id="tab-constitution" class="nav-tab-btn px-3.5 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition-all">
+          <i data-lucide="book-marked" class="w-3.5 h-3.5 inline mr-1 text-amber-600"></i> Constitution (2026)
         </button>
-        <button onclick="switchTab('govt')" id="tab-govt" class="nav-tab-btn px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all">
-          <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 inline mr-1.5"></i> DISHA 2.0 Hub
+        <button onclick="switchTab('directory')" id="tab-directory" class="nav-tab-btn px-3.5 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition-all">
+          <i data-lucide="users" class="w-3.5 h-3.5 inline mr-1 text-blue-600"></i> SCAORA & Nyaya Bandhu
+        </button>
+        <button onclick="switchTab('provider')" id="tab-provider" class="nav-tab-btn px-3.5 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition-all">
+          <i data-lucide="award" class="w-3.5 h-3.5 inline mr-1"></i> NyayCredits
+        </button>
+        <button onclick="switchTab('govt')" id="tab-govt" class="nav-tab-btn px-3.5 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-900 transition-all">
+          <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 inline mr-1"></i> DISHA 2.0
         </button>
       </nav>
 
       <!-- Right Controls: Language & Live Status -->
-      <div class="flex items-center space-x-3">
+      <div class="flex items-center space-x-2 sm:space-x-3">
         <div class="relative">
-          <select id="ui-language-select" onchange="changeLanguage(this.value)" class="text-xs bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-sm cursor-pointer">
+          <select id="ui-language-select" onchange="changeLanguage(this.value)" class="text-xs bg-white border border-slate-200 rounded-lg px-2 py-1.5 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-sm cursor-pointer">
             <option value="English">🌐 English</option>
-            <option value="Hindi">🇮🇳 हिन्दी (Hindi)</option>
-            <option value="Bengali">🇮🇳 বাংলা (Bengali)</option>
-            <option value="Tamil">🇮🇳 தமிழ் (Tamil)</option>
-            <option value="Marathi">🇮🇳 मराठी (Marathi)</option>
+            <option value="Hindi">🇮🇳 हिन्दी</option>
+            <option value="Bengali">🇮🇳 বাংলা</option>
+            <option value="Tamil">🇮🇳 தமிழ்</option>
+            <option value="Marathi">🇮🇳 मराठी</option>
           </select>
         </div>
 
-        <button onclick="openVerificationModal()" class="hidden sm:flex items-center space-x-1.5 text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-3 py-1.5 rounded-lg font-semibold transition-all">
+        <button onclick="openVerificationModal()" class="flex items-center space-x-1 text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2.5 py-1.5 rounded-lg font-semibold transition-all">
           <i data-lucide="shield-check" class="w-3.5 h-3.5 text-amber-600"></i>
-          <span>Verify Bar ID</span>
+          <span class="hidden sm:inline">Verify Bar/AOR ID</span>
         </button>
       </div>
 
@@ -140,13 +146,13 @@
         <div class="max-w-3xl">
           <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-800 text-xs font-semibold mb-3">
             <i data-lucide="sparkles" class="w-3.5 h-3.5 text-blue-600"></i>
-            <span>Multilingual & Voice-First Legal Need Detection</span>
+            <span>Multilingual & Voice-First Legal Need Detection • Backed by Article 39A</span>
           </div>
           <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
             Tell us your legal problem in <span class="gradient-text-primary">any Indian language</span>.
           </h1>
           <p class="text-sm text-slate-600 mt-1.5">
-            NyaySetu AI analyzes your issue, diagnoses applicable Indian Acts, and connects you with the exact right verified advocate, mediator, or free legal aid.
+            NyaySetu AI analyzes your issue, diagnoses applicable Indian Acts, cites relevant Constitutional Articles, and connects you with verified Supreme Court AORs (SCAORA), DOJ Nyaya Bandhu pro bono lawyers, or DLSA Free Legal Aid.
           </p>
         </div>
 
@@ -171,11 +177,11 @@
             </button>
           </div>
 
-          <!-- Quick Filters: Location, Budget, Consultation Mode -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <!-- Quick Filters: Location, Budget, Mode, Affiliation -->
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
             <div>
               <label class="block text-xs font-semibold text-slate-700 mb-1">
-                <i data-lucide="map-pin" class="w-3 h-3 inline text-slate-400"></i> Your City / Jurisdiction
+                <i data-lucide="map-pin" class="w-3 h-3 inline text-slate-400"></i> City / Jurisdiction
               </label>
               <select id="user-location-input" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-medium text-slate-700 focus:ring-2 focus:ring-brand-500">
                 <option value="Kolkata, West Bengal">Kolkata, West Bengal</option>
@@ -183,21 +189,21 @@
                 <option value="Mumbai, Maharashtra">Mumbai, Maharashtra</option>
                 <option value="Chennai, Tamil Nadu">Chennai, Tamil Nadu</option>
                 <option value="Bengaluru, Karnataka">Bengaluru, Karnataka</option>
+                <option value="Patna, Bihar">Patna, Bihar</option>
                 <option value="Lucknow, Uttar Pradesh">Lucknow, Uttar Pradesh</option>
-                <option value="Varanasi, Uttar Pradesh">Varanasi, Uttar Pradesh</option>
-                <option value="Howrah, West Bengal">Howrah, West Bengal</option>
+                <option value="Amaravati, Andhra Pradesh">Amaravati, Andhra Pradesh</option>
               </select>
             </div>
 
             <div>
               <label class="block text-xs font-semibold text-slate-700 mb-1">
-                <i data-lucide="indian-rupee" class="w-3 h-3 inline text-slate-400"></i> Maximum Consultation Budget
+                <i data-lucide="indian-rupee" class="w-3 h-3 inline text-slate-400"></i> Max Budget
               </label>
               <select id="user-budget-input" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-medium text-slate-700 focus:ring-2 focus:ring-brand-500">
-                <option value="0">₹0 (Free Legal Aid / DLSA / Lok Adalat)</option>
+                <option value="0">₹0 (Free Pro Bono / DLSA Aid)</option>
                 <option value="500" selected>Under ₹500 (Affordable)</option>
                 <option value="1000">Under ₹1,000 (Standard)</option>
-                <option value="2500">Under ₹2,500 (Senior Specialist)</option>
+                <option value="2000">Under ₹2,000 (Supreme Court AOR)</option>
               </select>
             </div>
 
@@ -206,9 +212,21 @@
                 <i data-lucide="video" class="w-3 h-3 inline text-slate-400"></i> Consultation Mode
               </label>
               <select id="user-mode-input" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-medium text-slate-700 focus:ring-2 focus:ring-brand-500">
-                <option value="tele-law">Instant Tele-Law (Video / Audio)</option>
-                <option value="in-person">In-Person Court Chamber</option>
+                <option value="tele-law">Tele-Law Video/Audio</option>
+                <option value="in-person">In-Person Chamber</option>
                 <option value="any">Any Available Mode</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">
+                <i data-lucide="filter" class="w-3 h-3 inline text-slate-400"></i> Provider Network
+              </label>
+              <select id="user-affiliation-filter" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-medium text-slate-700 focus:ring-2 focus:ring-brand-500">
+                <option value="all">All Verified Networks</option>
+                <option value="nyaya_bandhu">DOJ Nyaya Bandhu (Pro Bono)</option>
+                <option value="scaora">SCAORA (Supreme Court AOR)</option>
+                <option value="legal_aid">DLSA Free Legal Aid Clinics</option>
               </select>
             </div>
           </div>
@@ -225,7 +243,7 @@
               onclick="triggerLegalAnalysis()"
               class="bg-brand-900 hover:bg-brand-800 text-white px-6 py-2.5 rounded-xl font-bold text-xs flex items-center space-x-2 shadow-lg shadow-blue-900/20 transition-all hover:scale-[1.02]"
             >
-              <span>Analyze & Match Verified Providers</span>
+              <span>Analyze & Match Verified Lawyers</span>
               <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </button>
           </div>
@@ -235,15 +253,68 @@
       <!-- Loading State -->
       <div id="analysis-loading" class="hidden glass-card rounded-2xl p-12 text-center space-y-4">
         <div class="w-12 h-12 border-4 border-brand-200 border-t-brand-900 rounded-full animate-spin mx-auto"></div>
-        <h3 class="text-base font-bold text-slate-800">Processing Natural Language & Legal Categorization...</h3>
-        <p class="text-xs text-slate-500">Mapping statutory Indian Acts, evaluating urgency, and ranking verified providers across 6 explainable dimensions.</p>
+        <h3 class="text-base font-bold text-slate-800">Analyzing Dispute, Constitutional Provisions & Matching Verified LSPs...</h3>
+        <p class="text-xs text-slate-500">Mapping statutory Indian Acts, citing Constitutional Articles (2026 Edition), and ranking verified lawyers across 6 explainable dimensions.</p>
+      </div>
+
+      <!-- Contextless / Low-Information Query Warning Box (NEW) -->
+      <div id="contextless-warning-section" class="hidden glass-card rounded-2xl p-6 sm:p-8 border-l-4 border-amber-500 space-y-4 transition-all">
+        <div class="flex items-start space-x-3">
+          <div id="contextless-icon-box" class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+            <i id="contextless-icon" data-lucide="alert-triangle" class="w-6 h-6"></i>
+          </div>
+          <div class="flex-1">
+            <span id="contextless-badge" class="bg-amber-100 text-amber-900 text-[10px] font-bold px-2.5 py-0.5 rounded-md uppercase tracking-wider">Insufficient Legal Context</span>
+            <h3 id="contextless-title" class="text-base font-extrabold text-slate-900 mt-1">Please Provide a Few More Details About Your Dispute</h3>
+            <p id="contextless-message-text" class="text-xs text-slate-600 mt-1 leading-relaxed">
+              We could not identify specific dispute facts or legal categories from your input. To help NyaySetu accurately diagnose your case, identify statutory Indian Acts & Constitutional rights, and match verified lawyers, please include key details.
+            </p>
+          </div>
+        </div>
+
+        <!-- Medical Emergency Helpline Banner (Shown for Health Queries) -->
+        <div id="medical-helpline-box" class="hidden bg-red-50 border border-red-200 rounded-xl p-3.5 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div class="flex items-center space-x-2 text-red-900 font-bold">
+            <i data-lucide="phone-call" class="w-4 h-4 text-red-600"></i>
+            <span>Emergency Medical Contact Numbers (Govt of India):</span>
+          </div>
+          <div class="flex items-center space-x-2 text-[11px] font-bold text-red-800">
+            <span class="bg-white px-2.5 py-1 rounded-lg border border-red-200 shadow-2xs">🚑 Emergency Services: <strong>112</strong></span>
+            <span class="bg-white px-2.5 py-1 rounded-lg border border-red-200 shadow-2xs">🏥 National Health Helpline: <strong>1075</strong></span>
+          </div>
+        </div>
+
+        <!-- Helpful Guiding Tips -->
+        <div class="bg-slate-50 rounded-xl p-4 border border-slate-200 space-y-2 text-xs">
+          <span id="contextless-tips-header" class="font-bold text-slate-800 flex items-center space-x-1.5">
+            <i data-lucide="help-circle" class="w-4 h-4 text-blue-600"></i>
+            <span>Guidance & Actionable Recommendations:</span>
+          </span>
+          <ul id="contextless-tips-list" class="space-y-1.5 text-slate-700 pl-2">
+            <li class="flex items-start space-x-2"><span class="text-amber-500 font-bold">•</span><span><strong>1. What happened?</strong> (e.g. 'Neighbor built a wall on our land', 'Employer withheld 3 months salary', 'Received a Section 138 cheque bounce notice')</span></li>
+            <li class="flex items-start space-x-2"><span class="text-amber-500 font-bold">•</span><span><strong>2. Who is involved?</strong> (e.g. Neighbor, employer, bank, landlord/tenant, spouse, police)</span></li>
+            <li class="flex items-start space-x-2"><span class="text-amber-500 font-bold">•</span><span><strong>3. What relief are you seeking?</strong> (e.g. Urgent court stay order, wage recovery, mutual separation, criminal bail)</span></li>
+          </ul>
+        </div>
+
+        <!-- Quick 1-Click Fix Suggestions -->
+        <div class="pt-2">
+          <span class="text-[11px] font-semibold text-slate-500 block mb-2">Or try one of these standard legal dispute templates:</span>
+          <div class="flex flex-wrap gap-2 text-xs">
+            <button onclick="loadPreset(0)" class="bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 px-3 py-1.5 rounded-lg font-medium transition-all">🏞️ Land Boundary Encroachment</button>
+            <button onclick="loadPreset(1)" class="bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 px-3 py-1.5 rounded-lg font-medium transition-all">💼 Unpaid Salary / Wrongful Termination</button>
+            <button onclick="loadPreset(2)" class="bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 px-3 py-1.5 rounded-lg font-medium transition-all">👨‍👩‍👧 Mutual Divorce & Child Custody</button>
+            <button onclick="loadPreset(3)" class="bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 px-3 py-1.5 rounded-lg font-medium transition-all">🛡️ UPI Cyber Fraud Financial Scam</button>
+            <button onclick="loadPreset(4)" class="bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 px-3 py-1.5 rounded-lg font-medium transition-all">💳 Section 138 Cheque Bounce</button>
+          </div>
+        </div>
       </div>
 
       <!-- Analysis & Diagnostic Results Area (Dynamic) -->
       <div id="diagnostic-results-section" class="hidden space-y-6">
 
         <!-- STEP 1: AI Legal Diagnostic & Routing Card -->
-        <div class="glass-card rounded-2xl p-6 border-l-4 border-brand-900">
+        <div class="glass-card rounded-2xl p-6 border-l-4 border-brand-900 space-y-4">
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-200 pb-4">
             <div>
               <div class="flex items-center space-x-2 mb-1">
@@ -263,8 +334,19 @@
             </div>
           </div>
 
+          <!-- Constitutional Articles Highlights Box (NEW) -->
+          <div class="bg-amber-50/80 p-4 rounded-xl border border-amber-200">
+            <h4 class="text-xs font-bold text-amber-900 flex items-center space-x-1.5 mb-2">
+              <i data-lucide="book-marked" class="w-4 h-4 text-amber-700"></i>
+              <span>Constitutional Safeguards & Rights (The Constitution of India [2026 Edition])</span>
+            </h4>
+            <div id="constitutional-articles-list" class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+              <!-- Dynamic Constitutional Articles -->
+            </div>
+          </div>
+
           <!-- Diagnostic Details Grid -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 text-xs">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
             
             <!-- Applicable Acts -->
             <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
@@ -311,11 +393,11 @@
 
         <!-- STEP 2: Explainable Matched Professionals -->
         <div class="space-y-4">
-          <div class="flex items-center justify-between">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
               <div class="flex items-center space-x-2">
                 <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-md">Step 2 • Explainable Matching</span>
-                <h3 class="text-lg font-extrabold text-slate-900">Top Recommended & Verified Professionals</h3>
+                <h3 class="text-lg font-extrabold text-slate-900">Recommended Verified Lawyers (SCAORA, Nyaya Bandhu & Bar)</h3>
               </div>
               <p class="text-xs text-slate-500 mt-0.5">Ranked using multi-factor weights (Domain 30%, Location 20%, Language 15%, Budget 15%, SLA 10%, Trust 10%).</p>
             </div>
@@ -351,7 +433,7 @@
           <span class="text-slate-500 font-semibold self-center">Try Sample Notice:</span>
           <button onclick="fillSampleDocument('cheque')" class="bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded text-slate-700 font-medium transition-all">📄 Sec 138 Cheque Notice</button>
           <button onclick="fillSampleDocument('eviction')" class="bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded text-slate-700 font-medium transition-all">📄 Tenant Eviction Notice</button>
-          <button onclick="fillSampleDocument('fir')" class="bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded text-slate-700 font-medium transition-all">📄 Police FIR / Cognizable Complaint</button>
+          <button onclick="fillSampleDocument('fir')" class="bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded text-slate-700 font-medium transition-all">📄 Police FIR / Criminal Complaint</button>
         </div>
 
         <div class="mt-4 space-y-4">
@@ -388,6 +470,12 @@
 
           <p id="doc-summary-text" class="text-xs text-slate-700 leading-relaxed font-medium"></p>
 
+          <!-- Constitutional Context -->
+          <div id="doc-const-box" class="bg-blue-50/70 p-3 rounded-lg border border-blue-200 text-xs">
+            <span class="font-bold text-blue-900 block mb-0.5">Constitutional Safeguard:</span>
+            <span id="doc-const-text" class="text-blue-800">Protected under Article 21 and Article 22(1).</span>
+          </div>
+
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
             <div class="bg-red-50/70 p-3 rounded-lg border border-red-200">
               <h4 class="font-bold text-red-900 mb-1.5 flex items-center space-x-1">
@@ -410,7 +498,118 @@
       </div>
     </section>
 
-    <!-- ==================== TAB 3: LSP & NYAYCREDITS DASHBOARD ==================== -->
+    <!-- ==================== TAB 3: CONSTITUTION OF INDIA (2026) & AMENDMENTS ==================== -->
+    <section id="view-constitution" class="hidden space-y-6">
+      <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+        <div class="max-w-3xl">
+          <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-900 text-xs font-semibold mb-3">
+            <i data-lucide="landmark" class="w-3.5 h-3.5 text-amber-600"></i>
+            <span>Official Digital Digest • Ministry of Law & Justice, Legislative Dept (As on 1st May, 2026)</span>
+          </div>
+          <h2 class="text-2xl font-extrabold text-slate-900">The Constitution of India & Amendment Acts</h2>
+          <p class="text-xs text-slate-600 mt-1">Explore fundamental constitutional rights, judicial jurisdictions (Articles 32, 136, 142, 226), Directive Principles (Article 39A Free Legal Aid), and all Landmark Constitutional Amendments (1st to 106th Amendment Acts).</p>
+        </div>
+
+        <!-- Search Bar & Category Filter -->
+        <div class="flex flex-col sm:flex-row gap-3">
+          <div class="relative flex-1">
+            <input
+              id="constitution-search-input"
+              type="text"
+              oninput="filterConstitutionContent()"
+              placeholder="Search Articles or Amendments (e.g. 'Article 39A', 'Property', '106th Amendment', 'Writs', 'Panchayat')..."
+              class="w-full bg-white border border-slate-300 rounded-xl p-3 pl-10 text-xs focus:ring-2 focus:ring-brand-500 shadow-sm"
+            >
+            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3.5 text-slate-400"></i>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <button onclick="setConstitutionSubTab('articles')" id="subtab-articles" class="px-4 py-2 rounded-xl text-xs font-bold bg-brand-900 text-white shadow-sm transition-all">
+              Key Articles
+            </button>
+            <button onclick="setConstitutionSubTab('amendments')" id="subtab-amendments" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">
+              Amendment Acts (1 - 106)
+            </button>
+          </div>
+        </div>
+
+        <!-- Articles Grid View -->
+        <div id="constitution-articles-view" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Dynamic Article Cards -->
+        </div>
+
+        <!-- Amendments Grid View -->
+        <div id="constitution-amendments-view" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Dynamic Amendment Cards -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== TAB 4: LAWYERS DIRECTORY (SCAORA & NYAYA BANDHU) ==================== -->
+    <section id="view-directory" class="hidden space-y-6">
+      <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-900 text-xs font-semibold mb-2">
+              <i data-lucide="shield-check" class="w-3.5 h-3.5 text-blue-600"></i>
+              <span>Official Directories Integration</span>
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900">SCAORA & Nyaya Bandhu Advocates Directory</h2>
+            <p class="text-xs text-slate-600 mt-1">Verified Supreme Court Advocates-on-Record (SCAORA) and Department of Justice (DOJ) Pro Bono Panel Counsel across India.</p>
+          </div>
+
+          <!-- Network Badges -->
+          <div class="flex items-center gap-2 text-[11px]">
+            <span class="bg-blue-100 text-blue-800 px-2.5 py-1 rounded-lg font-bold border border-blue-200">SCAORA (Supreme Court)</span>
+            <span class="bg-amber-100 text-amber-800 px-2.5 py-1 rounded-lg font-bold border border-amber-200">Nyaya Bandhu (DOJ)</span>
+          </div>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="relative">
+            <input
+              id="directory-search-input"
+              type="text"
+              oninput="filterLawyersDirectory()"
+              placeholder="Search by advocate name, city, bar ID, or domain..."
+              class="w-full bg-white border border-slate-300 rounded-xl p-2.5 pl-9 text-xs focus:ring-2 focus:ring-brand-500 shadow-sm"
+            >
+            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
+          </div>
+
+          <div>
+            <select id="directory-network-filter" onchange="filterLawyersDirectory()" class="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs font-semibold text-slate-700">
+              <option value="all">All Verified Networks</option>
+              <option value="scaora">Supreme Court Advocates-on-Record (SCAORA)</option>
+              <option value="nyaya_bandhu">DOJ Nyaya Bandhu (Pro Bono)</option>
+              <option value="legal_aid">Free Legal Aid / DLSA</option>
+            </select>
+          </div>
+
+          <div>
+            <select id="directory-domain-filter" onchange="filterLawyersDirectory()" class="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs font-semibold text-slate-700">
+              <option value="all">All Legal Domains</option>
+              <option value="Property & Land Disputes">Property & Land</option>
+              <option value="Family & Matrimonial">Family & Matrimonial</option>
+              <option value="Labor & Employment">Labor & Employment</option>
+              <option value="Constitutional Writs">Constitutional Writs (Art 32/226)</option>
+              <option value="Consumer Protection & Fraud">Consumer Protection</option>
+              <option value="Criminal & Bail Matters">Criminal & Bail</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Directory Grid -->
+        <div id="lawyers-directory-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Dynamic Lawyer Cards -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== TAB 5: LSP & NYAYCREDITS DASHBOARD ==================== -->
     <section id="view-provider" class="hidden space-y-6">
       
       <!-- Provider Header & Wallet Card -->
@@ -423,23 +622,23 @@
               <img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?w=150&auto=format&fit=crop&q=80" alt="Advocate Profile" class="w-16 h-16 rounded-xl object-cover border-2 border-brand-900 shadow-sm">
               <div>
                 <div class="flex items-center space-x-2">
-                  <h2 class="text-lg font-black text-slate-900">Adv. Rajesh Kumar Sen</h2>
-                  <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center space-x-1">
-                    <i data-lucide="check-check" class="w-3 h-3 text-emerald-600"></i>
-                    <span>Bar Council Verified</span>
+                  <h2 class="text-lg font-black text-slate-900">Adv. Shekhar Kumar</h2>
+                  <span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center space-x-1">
+                    <i data-lucide="check-check" class="w-3 h-3 text-blue-600"></i>
+                    <span>SCAORA Supreme Court AOR</span>
                   </span>
                 </div>
-                <p class="text-xs text-slate-500 font-medium">Bar ID: <span class="font-mono font-bold text-slate-700">WB/1482/2014</span> • Calcutta High Court & Alipore District</p>
+                <p class="text-xs text-slate-500 font-medium">AOR ID: <span class="font-mono font-bold text-slate-700">SCAORA/AOR/802402</span> • Supreme Court of India</p>
                 <div class="flex items-center space-x-3 text-xs text-slate-600 mt-1">
-                  <span>⭐ 4.9 (184 Reviews)</span>
-                  <span>⚖️ 310 Cases Resolved</span>
-                  <span>🛡️ NyayTrust Score: 98/100</span>
+                  <span>⭐ 4.98 (310 Reviews)</span>
+                  <span>⚖️ 420 Cases Handled</span>
+                  <span>🛡️ NyayTrust Score: 100/100</span>
                 </div>
               </div>
             </div>
 
             <span class="bg-amber-100 text-amber-900 border border-amber-200 text-xs font-bold px-3 py-1 rounded-lg">
-              Pro Bono Champion
+              Supreme Court Panelist
             </span>
           </div>
 
@@ -447,10 +646,10 @@
           <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
             <h4 class="text-xs font-bold text-slate-800 mb-1 flex items-center space-x-1.5">
               <i data-lucide="shield-check" class="w-3.5 h-3.5 text-blue-600"></i>
-              <span>Live Bar Council Licensure & Identity Verification Engine</span>
+              <span>Live Bar Council, SCAORA & Nyaya Bandhu Credential Verification Engine</span>
             </h4>
             <div class="flex gap-2 mt-2">
-              <input id="test-bar-id-input" type="text" value="WB/1482/2014" placeholder="Enter Bar ID (e.g. WB/1482/2014 or D/2410/2012)" class="flex-1 bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-mono">
+              <input id="test-bar-id-input" type="text" value="SCAORA/AOR/802402" placeholder="Enter Bar or AOR ID (e.g. SCAORA/AOR/802402 or AP/1892/2009)" class="flex-1 bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-mono">
               <button onclick="testBarIdVerification()" class="bg-brand-900 hover:bg-brand-800 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition-all">Verify Credentials</button>
             </div>
             <div id="bar-verify-result" class="mt-2 text-xs hidden"></div>
@@ -466,7 +665,7 @@
 
           <div>
             <div class="flex items-baseline space-x-2">
-              <span id="wallet-credits-val" class="text-3xl font-black text-slate-900">1,450</span>
+              <span id="wallet-credits-val" class="text-3xl font-black text-slate-900">3,800</span>
               <span class="text-sm font-bold text-amber-600">🪙 NyayCredits</span>
             </div>
             <p class="text-[11px] text-slate-500 mt-1">Earned via Pro Bono representation, Legal Aid cases, and 5-star citizen reviews.</p>
@@ -475,14 +674,14 @@
           <div class="space-y-1.5 text-xs border-t border-slate-200/80 pt-3">
             <div class="flex justify-between font-medium">
               <span class="text-slate-600">Tier Status:</span>
-              <span class="font-bold text-brand-900">Tier 3 (Pro Bono Champion)</span>
+              <span class="font-bold text-brand-900">National Leader (Tier 4)</span>
             </div>
             <div class="flex justify-between font-medium">
               <span class="text-slate-600">Next Milestone:</span>
-              <span class="text-slate-700">550 credits to National Leader</span>
+              <span class="text-slate-700">Top 1% National Panel</span>
             </div>
             <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden mt-1">
-              <div class="bg-gradient-to-r from-amber-400 to-amber-600 h-full rounded-full w-[72%]"></div>
+              <div class="bg-gradient-to-r from-amber-400 to-amber-600 h-full rounded-full w-[94%]"></div>
             </div>
           </div>
 
@@ -506,19 +705,18 @@
         </h3>
         
         <div id="provider-bookings-list" class="space-y-2.5 text-xs">
-          <!-- Dynamic Booking Cards -->
           <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <div>
               <div class="flex items-center space-x-2">
                 <span class="font-bold text-slate-900">Citizen: Smt. Sunita Mondal</span>
                 <span class="bg-blue-100 text-blue-800 px-2 py-0.2 rounded font-semibold text-[10px]">Tele-Law Video</span>
-                <span class="bg-amber-100 text-amber-800 px-2 py-0.2 rounded font-semibold text-[10px]">+150 🪙 Legal Aid Case</span>
+                <span class="bg-amber-100 text-amber-800 px-2 py-0.2 rounded font-semibold text-[10px]">+150 🪙 Pro Bono Case</span>
               </div>
-              <p class="text-slate-500 mt-0.5">Dispute: Ancestral Land Partition • Preferred Lang: Bengali • Alipore District</p>
+              <p class="text-slate-500 mt-0.5">Dispute: Land Title Injunction (Art 300A) • Preferred Lang: Bengali • Kolkata</p>
             </div>
             <a href="https://meet.nyaysetu.gov.in/tele-law/sample" target="_blank" class="bg-brand-900 hover:bg-brand-800 text-white px-3 py-1.5 rounded-lg font-bold flex items-center space-x-1 shadow-sm">
               <i data-lucide="video" class="w-3.5 h-3.5"></i>
-              <span>Join Secure Consultation</span>
+              <span>Join Secure Room</span>
             </a>
           </div>
         </div>
@@ -526,7 +724,7 @@
 
     </section>
 
-    <!-- ==================== TAB 4: GOVERNMENT & DISHA 2.0 HUB ==================== -->
+    <!-- ==================== TAB 6: GOVERNMENT & DISHA 2.0 HUB ==================== -->
     <section id="view-govt" class="hidden space-y-6">
       
       <!-- Key Impact Metrics (Slide 5) -->
@@ -655,7 +853,7 @@
       <div class="flex items-center justify-between border-b border-slate-200 pb-3">
         <div>
           <span class="text-[10px] font-bold uppercase tracking-wider text-blue-700">Confirm Consultation</span>
-          <h3 id="modal-provider-name" class="text-base font-extrabold text-slate-900">Adv. Rajesh Kumar Sen</h3>
+          <h3 id="modal-provider-name" class="text-base font-extrabold text-slate-900">Adv. Shekhar Kumar</h3>
         </div>
         <button onclick="closeBookingModal()" class="text-slate-400 hover:text-slate-600">
           <i data-lucide="x" class="w-5 h-5"></i>
@@ -695,9 +893,9 @@
         <div class="p-3 bg-blue-50 rounded-xl border border-blue-200">
           <div class="flex justify-between items-center font-semibold">
             <span class="text-blue-900">Total Consultation Fee:</span>
-            <span id="modal-fee-display" class="text-sm font-black text-brand-900">₹500</span>
+            <span id="modal-fee-display" class="text-sm font-black text-brand-900">₹0 (Pro Bono)</span>
           </div>
-          <span class="text-[10px] text-blue-700 block mt-0.5">Subsidized under NyaySetu Access-to-Justice guidelines.</span>
+          <span class="text-[10px] text-blue-700 block mt-0.5">Subsidized under NyaySetu & Article 39A Access-to-Justice guidelines.</span>
         </div>
       </div>
 
@@ -749,7 +947,7 @@
       <div class="flex items-center justify-between border-b border-slate-200 pb-3">
         <h3 class="text-sm font-bold text-slate-900 flex items-center space-x-1.5">
           <i data-lucide="shield-check" class="w-4 h-4 text-blue-600"></i>
-          <span>Bar Council Licensure Checker</span>
+          <span>Bar Council & SCAORA Licensure Checker</span>
         </h3>
         <button onclick="closeVerificationModal()" class="text-slate-400 hover:text-slate-600">
           <i data-lucide="x" class="w-5 h-5"></i>
@@ -758,11 +956,11 @@
 
       <div class="space-y-3 text-xs">
         <div>
-          <label class="block font-semibold text-slate-700 mb-1">State Bar Council Enrolment ID</label>
-          <input id="quick-bar-id" type="text" placeholder="e.g. WB/1482/2014 or D/2410/2012" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-mono text-xs">
+          <label class="block font-semibold text-slate-700 mb-1">State Bar / SCAORA Enrolment ID</label>
+          <input id="quick-bar-id" type="text" placeholder="e.g. SCAORA/AOR/802402, AP/1892/2009, WB/1482/2014" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-mono text-xs">
         </div>
         <button onclick="executeQuickBarCheck()" class="w-full bg-brand-900 hover:bg-brand-800 text-white py-2 rounded-lg font-bold">
-          Check Bar Registry Status
+          Check Official Registry Status
         </button>
         <div id="quick-bar-result" class="p-3 bg-slate-50 rounded-xl border border-slate-200 hidden"></div>
       </div>
@@ -774,12 +972,12 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center space-x-2">
         <span class="font-bold brand-font text-white">NyaySetu (न्यायसेतु)</span>
-        <span>• AI-Powered Legal Service Exchange • Built for Hackspire 2026</span>
+        <span>• Grounded in Constitution of India [2026 Edition] • Hackspire 2026</span>
       </div>
       <div class="flex items-center space-x-4 text-slate-400">
-        <span>Aligned with DISHA 2.0 & NALSA</span>
+        <span>DOJ Nyaya Bandhu Panel & SCAORA Integrated</span>
         <span>•</span>
-        <span>Explainable Matching Engine v1.0</span>
+        <span>Explainable Matching Engine v1.1</span>
       </div>
     </div>
   </footer>
